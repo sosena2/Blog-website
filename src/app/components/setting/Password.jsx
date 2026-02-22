@@ -6,6 +6,54 @@ export default function Password() {
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [saving, setSaving] = useState(false);
+	const [error, setError] = useState("");
+	const [success, setSuccess] = useState("");
+
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+
+		try {
+			setSaving(true);
+			setError("");
+			setSuccess("");
+
+			const token = localStorage.getItem("token");
+			if (!token) {
+				setError("Please login to manage settings");
+				return;
+			}
+
+			const res = await fetch("/api/user/password", {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({
+					currentPassword,
+					newPassword,
+					confirmPassword,
+				}),
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				setError(data.message || "Failed to update password");
+				return;
+			}
+
+			setSuccess("Password updated successfully");
+			setCurrentPassword("");
+			setNewPassword("");
+			setConfirmPassword("");
+		} catch (err) {
+			setError(err.message || "Something went wrong");
+		} finally {
+			setSaving(false);
+		}
+	};
 
 	return (
 		<section className="rounded-3xl border border-gray-200 bg-white p-10 mt-10">
@@ -16,7 +64,9 @@ export default function Password() {
 				Change Password
 			</h2>
 
-			<form className="mt-10 space-y-8">
+			<form className="mt-10 space-y-8" onSubmit={handleSubmit}>
+				{error && <p className="text-red-600">{error}</p>}
+				{success && <p className="text-green-600">{success}</p>}
 				<div>
 					<label
 						htmlFor="currentPassword"
@@ -67,9 +117,10 @@ export default function Password() {
 
 				<button
 					type="submit"
+					disabled={saving}
 					className="rounded-3xl bg-[#7A5AF8] px-4 py-2 font-semibold text-white transition hover:bg-[#6B4EF0]"
 				>
-					Update Password
+					{saving ? "Updating..." : "Update Password"}
 				</button>
 			</form>
 		</section>

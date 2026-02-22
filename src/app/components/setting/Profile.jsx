@@ -1,14 +1,105 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function Profile() {
-	const [fullName, setFullName] = useState("Sarah Martinez");
-	const [email, setEmail] = useState("sarah.martinez@example.com");
-	const [bio, setBio] = useState(
-		"Travel blogger and ocean lover. Sharing tropical adventures from around the world."
-	);
+	const [fullName, setFullName] = useState("");
+	const [email, setEmail] = useState("");
+	const [bio, setBio] = useState("");
+	const [profileImage, setProfileImage] = useState("");
+	const [loading, setLoading] = useState(true);
+	const [saving, setSaving] = useState(false);
+	const [error, setError] = useState("");
+	const [success, setSuccess] = useState("");
+
+	useEffect(() => {
+		const fetchSettings = async () => {
+			try {
+				setLoading(true);
+				setError("");
+
+				const token = localStorage.getItem("token");
+				if (!token) {
+					setError("Please login to manage settings");
+					return;
+				}
+
+				const res = await fetch("/api/user/settings", {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+
+				const data = await res.json();
+
+				if (!res.ok) {
+					setError(data.message || "Failed to load profile settings");
+					return;
+				}
+
+				setFullName(data.name || "");
+				setEmail(data.email || "");
+				setBio(data.bio || "");
+				setProfileImage(data.profileImage || "");
+			} catch (err) {
+				setError(err.message || "Something went wrong");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchSettings();
+	}, []);
+
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+
+		try {
+			setSaving(true);
+			setError("");
+			setSuccess("");
+
+			const token = localStorage.getItem("token");
+			if (!token) {
+				setError("Please login to manage settings");
+				return;
+			}
+
+			const res = await fetch("/api/user/settings", {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({
+					name: fullName,
+					email,
+					bio,
+					profileImage,
+				}),
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				setError(data.message || "Failed to update profile");
+				return;
+			}
+
+			setSuccess("Profile updated successfully");
+		} catch (err) {
+			setError(err.message || "Something went wrong");
+		} finally {
+			setSaving(false);
+		}
+	};
+
+	if (loading) {
+		return (
+			<section className="rounded-3xl border border-gray-200 bg-white p-10 w-full mx-auto">
+				<p className="text-gray-600">Loading profile settings...</p>
+			</section>
+		);
+	}
 
 	return (
 		<section className="rounded-3xl border border-gray-200 bg-white p-10 w-full  mx-auto">
@@ -24,7 +115,7 @@ export default function Profile() {
 
 				<div className="mt-5 flex flex-wrap items-center gap-6">
 					<Image
-						src="/images/profile.jpg"
+						src={profileImage || "/images/profile.jpg"}
 						alt="Profile picture"
 						width={10}
 						height={10}
@@ -58,7 +149,23 @@ export default function Profile() {
 				</div>
 			</div>
 
-			<form className="mt-8 space-y-8">
+			<form className="mt-8 space-y-8" onSubmit={handleSubmit}>
+				{error && <p className="text-red-600">{error}</p>}
+				{success && <p className="text-green-600">{success}</p>}
+
+				<div>
+					<label htmlFor="profileImage" className="block font-medium text-gray-900">
+						Profile Image URL
+					</label>
+					<input
+						id="profileImage"
+						type="text"
+						value={profileImage}
+						onChange={(event) => setProfileImage(event.target.value)}
+						placeholder="https://..."
+						className="mt-3 w-full rounded-3xl border border-gray-300 bg-transparent px-4 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#7A5AF8]"
+					/>
+				</div>
 				<div>
 					<label htmlFor="fullName" className="block font-medium text-gray-900">
 						Full Name
@@ -104,9 +211,10 @@ export default function Profile() {
 
 				<button
 					type="submit"
+					disabled={saving}
 					className="rounded-[18px] bg-[#7A5AF8] px-4 py-2 font-semibold text-white transition hover:bg-[#6B4EF0]"
 				>
-					Save Changes
+					{saving ? "Saving..." : "Save Changes"}
 				</button>
 			</form>
 		</section>

@@ -1,41 +1,73 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 
 export default function PostsTable() {
-  const posts = [
-    {
-      id: 1,
-      title: "The Ultimate Guide to Tropical...",
-      category: "Beach",
-      date: "Feb 15, 2026",
-      views: "5,420",
-      status: "Published",
-      image:
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-    },
-    {
-      id: 2,
-      title: "Mountain Hiking: Essential Tips...",
-      category: "Adventure",
-      date: "Feb 12, 2026",
-      views: "3,890",
-      status: "Published",
-      image:
-        "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
-    },
-    {
-      id: 3,
-      title: "Exploring Europe's Architectural...",
-      category: "Culture",
-      date: "Feb 10, 2026",
-      views: "6,720",
-      status: "Published",
-      image:
-        "https://images.unsplash.com/photo-1467269204594-9661b134dd2b",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchMyPosts = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("Please login to view your posts");
+          return;
+        }
+
+        const res = await fetch("/api/user/stories", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.message || "Failed to load your posts");
+          return;
+        }
+
+        setPosts(data);
+      } catch (err) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMyPosts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden p-6">
+        <p className="text-gray-600">Loading your posts...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden p-6">
+        <p className="text-red-600">{error}</p>
+      </div>
+    );
+  }
+
+  if (!posts.length) {
+    return (
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden p-6">
+        <p className="text-gray-600">You have not created any posts yet.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
@@ -51,13 +83,13 @@ export default function PostsTable() {
       {/* Rows */}
       {posts.map((post) => (
         <div
-          key={post.id}
+          key={post._id}
           className="grid grid-cols-5 items-center px-6 py-5 border-t"
         >
           {/* Title + Image */}
           <div className="col-span-2 flex items-center gap-4">
             <Image
-              src={post.image}
+              src={post.coverImage || "/images/awash.jpg"}
               alt=""
               width={56}
               height={56}
@@ -66,28 +98,28 @@ export default function PostsTable() {
             <div>
               <p className="font-semibold">{post.title}</p>
               <p className="text-gray-500 text-sm">
-                {post.category}
+                {post.tags?.[0] || "General"}
               </p>
             </div>
           </div>
 
           {/* Status */}
           <div>
-            <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-              {post.status}
+            <span className={`px-3 py-1 rounded-full text-sm ${post.status === "published" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
+              {post.status === "published" ? "Published" : "Draft"}
             </span>
           </div>
 
           {/* Date */}
           <div className="text-gray-600 text-sm">
-            {post.date}
+            {new Date(post.createdAt).toDateString()}
           </div>
 
           {/* Views + Actions */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-gray-600">
               <Eye size={16} />
-              <span>{post.views}</span>
+              <span>{post.likes?.length || 0}</span>
             </div>
 
             <div className="flex items-center gap-3">

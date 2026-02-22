@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const languages = ["English", "Spanish", "French", "Portuguese"];
 const timezones = [
@@ -11,9 +11,95 @@ const timezones = [
 ];
 
 export default function Account() {
-	const [username, setUsername] = useState("sarah-martinez");
+	const [username, setUsername] = useState("");
 	const [language, setLanguage] = useState("English");
 	const [timezone, setTimezone] = useState("UTC-05:00 Eastern Time");
+	const [loading, setLoading] = useState(true);
+	const [saving, setSaving] = useState(false);
+	const [error, setError] = useState("");
+	const [success, setSuccess] = useState("");
+
+	useEffect(() => {
+		const fetchSettings = async () => {
+			try {
+				setLoading(true);
+				setError("");
+
+				const token = localStorage.getItem("token");
+				if (!token) {
+					setError("Please login to manage settings");
+					return;
+				}
+
+				const res = await fetch("/api/user/settings", {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+
+				const data = await res.json();
+
+				if (!res.ok) {
+					setError(data.message || "Failed to load account settings");
+					return;
+				}
+
+				setUsername(data.username || "");
+				setLanguage(data.language || "English");
+				setTimezone(data.timezone || "UTC-05:00 Eastern Time");
+			} catch (err) {
+				setError(err.message || "Something went wrong");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchSettings();
+	}, []);
+
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+
+		try {
+			setSaving(true);
+			setError("");
+			setSuccess("");
+
+			const token = localStorage.getItem("token");
+			if (!token) {
+				setError("Please login to manage settings");
+				return;
+			}
+
+			const res = await fetch("/api/user/settings", {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({ username, language, timezone }),
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				setError(data.message || "Failed to update account settings");
+				return;
+			}
+
+			setSuccess("Account settings updated successfully");
+		} catch (err) {
+			setError(err.message || "Something went wrong");
+		} finally {
+			setSaving(false);
+		}
+	};
+
+	if (loading) {
+		return (
+			<section className="rounded-3xl border border-gray-200 bg-white p-10 mt-10">
+				<p className="text-gray-600">Loading account settings...</p>
+			</section>
+		);
+	}
 
 	return (
 		<section className="rounded-3xl border border-gray-200 bg-white p-10 mt-10">
@@ -24,7 +110,9 @@ export default function Account() {
 				Account Settings
 			</h2>
 
-			<form className="mt-10 space-y-8">
+			<form className="mt-10 space-y-8" onSubmit={handleSubmit}>
+				{error && <p className="text-red-600">{error}</p>}
+				{success && <p className="text-green-600">{success}</p>}
 				<div>
 					<label htmlFor="username" className="block font-medium text-gray-900">
 						Username
@@ -76,9 +164,10 @@ export default function Account() {
 
 				<button
 					type="submit"
+					disabled={saving}
 					className="rounded-[18px] bg-[#7A5AF8] px-4 py-2 font-semibold text-white transition hover:bg-[#6B4EF0]"
 				>
-					Save Changes
+					{saving ? "Saving..." : "Save Changes"}
 				</button>
 			</form>
 		</section>
