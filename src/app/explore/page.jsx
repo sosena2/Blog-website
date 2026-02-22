@@ -1,19 +1,54 @@
 'use client'
-import React, {useState} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import {Search,Filter} from 'lucide-react'
 import ExploreCard from '../components/explore/ExploreCard'
 
 const Explore = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [stories, setStories] = useState([]);
   const [activeTag, setActiveTag] = useState('All');
   const [sortBy, setSortBy] = useState('Most Recent');
   
 
   const tags = ['#Adventure', '#Beach', '#City', '#Nature', '#Culture'];
+  
+  useEffect(() => {
+    const fetchStories = async () => {
+      const res = await fetch('/api/stories')
+      const data = await res.json();
+      setStories(data) 
+    };
+    fetchStories();
+  }, []);
 
-  const toggleTag = (tag) =>{
-    setActiveTag(prev => prev === tag ? 'All' : tag)
-  };
+  const filteredStories = useMemo(() => {
+    let filtered = [...stories];
+   
+    // search filter
+    if(searchTerm){
+      filtered = filtered.filter(story => 
+        story.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        story.content.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }
+    
+    // tag filter
+    if(activeTag !== 'All'){
+      filtered = filtered.filter(story =>
+        story.tags?.includes(activeTag)
+      )
+    }
+
+    // sorting
+    if(sortBy === 'Most Recent'){
+      filtered.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))
+    } else if (sortBy === 'Oldest'){
+      filtered.sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt))
+    }
+
+    return filtered;
+  }, [stories, searchTerm, activeTag, sortBy])
+  
   return (
     <div className="bg-[#F5F1EB] space-y-8 pb-10">
       <div className=' p-20 text-center'>
@@ -56,7 +91,7 @@ const Explore = () => {
           {tags.map((tag) => (
             <button
             key={tag}
-            onClick = {() => toggleTag(tag)}
+            onClick = {() => setActiveTag(tag)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition
               ${ activeTag === tag
                 ? 'bg-green-950 text-white'
@@ -64,26 +99,27 @@ const Explore = () => {
               }
               `}
               >
-                #{tag}
+                {tag}
             </button>
           ))}
         </div>
         {/* sort section */}
         <div className='flex flex-col gap-2'>
           <p className=''> Sort by</p> 
-          <select className='w-full bg-gray-200 px-4 py-2 rounded-lg'>
+          <select 
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className='w-full bg-gray-200 px-4 py-2 rounded-lg'>
             <option>Most Recent</option>
             <option>Oldest</option>
-            <option>Most Popular</option>
           </select>
         </div>
 
       </div>
       <div className='w-[90%] mx-auto flex flex-col gap-6'>
-        <ExploreCard />
-        <ExploreCard />
-        <ExploreCard />
-        <ExploreCard />
+         {filteredStories.map(story => (
+          <ExploreCard key = {story._id} story={story} />
+         ))}
       </div>
     </div>
   )
