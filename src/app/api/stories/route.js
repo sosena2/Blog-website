@@ -9,24 +9,43 @@ export async function POST(req) {
     await connectDB();
 
     const decoded = verifyToken(req);
-    const { title, content, status } = await req.json();
+    const {
+      title,
+      subtitle,
+      content,
+      coverImage,
+      tags = [],
+      status = "published",
+    } = await req.json();
 
-    if (!title || !content) {
+    if (status !== "draft" && (!title || !content)) {
       return NextResponse.json(
         { message: "Title and content required" },
         { status: 400 }
       );
     }
 
-    const slug = title
+    if (status !== "draft" && !coverImage) {
+      return NextResponse.json(
+        { message: "Cover image is required" },
+        { status: 400 }
+      );
+    }
+
+    const baseSlug = (title || "draft")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
 
+    const slug = `${baseSlug || "draft"}-${Date.now()}`;
+
     const story = await Story.create({
       title,
+      subtitle,
       slug,
       content,
+      coverImage,
+      tags,
       status,
       author: decoded.id,
     });

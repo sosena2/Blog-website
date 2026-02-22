@@ -122,14 +122,14 @@ export default function Notification() {
 
 	if (loading) {
 		return (
-			<section className="rounded-3xl border border-gray-200 bg-white p-10 mt-10">
+			<section className="rounded-3xl border border-[#D8E8ED] bg-white p-10 mt-10">
 				<p className="text-gray-600">Loading notification settings...</p>
 			</section>
 		);
 	}
 
 	return (
-		<section className="rounded-3xl border border-gray-200 bg-white p-10 mt-10">
+		<section className="rounded-3xl border border-[#D8E8ED] bg-white p-10 mt-10">
 			<h2
 				className="text-2xl font-bold text-gray-900"
 				style={{ fontFamily: "var(--font-playfair-display)" }}
@@ -144,7 +144,7 @@ export default function Notification() {
 				{preferences.map((item) => (
 					<div
 						key={item.id}
-						className="flex items-start justify-between rounded-3xl border border-gray-300 bg-transparent px-4 py-2"
+						className="flex items-start justify-between rounded-3xl border border-[#CFE2E8] bg-[#FCFEFF] px-4 py-2"
 					>
 						<div>
 							<h3 className="font-medium text-gray-900">{item.title}</h3>
@@ -157,7 +157,7 @@ export default function Notification() {
 							aria-pressed={item.enabled}
 							onClick={() => togglePreference(item.id)}
 							className={`relative inline-flex h-7 w-14 shrink-0 items-center rounded-full p-1 transition ${
-								item.enabled ? "bg-[#7A5AF8]" : "bg-gray-300"
+								item.enabled ? "bg-[#0F4C5C]" : "bg-gray-300"
 							}`}
 						>
 							<span
@@ -174,7 +174,7 @@ export default function Notification() {
 				type="button"
 				onClick={handleSave}
 				disabled={saving}
-				className="mt-8 rounded-[18px] bg-[#7A5AF8] px-4 py-2 font-semibold text-white transition hover:bg-[#6B4EF0]"
+				className="mt-8 rounded-[18px] bg-[#0F4C5C] px-4 py-2 font-semibold text-white transition hover:bg-[#0C3D4A]"
 			>
 				{saving ? "Saving..." : "Save Preferences"}
 			</button>

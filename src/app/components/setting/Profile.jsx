@@ -8,6 +8,7 @@ export default function Profile() {
 	const [email, setEmail] = useState("");
 	const [bio, setBio] = useState("");
 	const [profileImage, setProfileImage] = useState("");
+	const [imageFileName, setImageFileName] = useState("");
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState("");
@@ -93,16 +94,38 @@ export default function Profile() {
 		}
 	};
 
+	const handleImageUpload = (event) => {
+		const file = event.target.files?.[0];
+		if (!file) return;
+
+		if (!file.type.startsWith("image/")) {
+			setError("Please select a valid image file");
+			return;
+		}
+
+		setError("");
+		setImageFileName(file.name);
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			setProfileImage(String(reader.result || ""));
+		};
+		reader.onerror = () => {
+			setError("Failed to read image file");
+		};
+		reader.readAsDataURL(file);
+	};
+
 	if (loading) {
 		return (
-			<section className="rounded-3xl border border-gray-200 bg-white p-10 w-full mx-auto">
+			<section className="rounded-3xl border border-[#D8E8ED] bg-white p-10 w-full mx-auto">
 				<p className="text-gray-600">Loading profile settings...</p>
 			</section>
 		);
 	}
 
 	return (
-		<section className="rounded-3xl border border-gray-200 bg-white p-10 w-full  mx-auto">
+		<section className="rounded-3xl border border-[#D8E8ED] bg-white p-10 w-full  mx-auto">
 			<h2
 				className="text-2xl font-bold text-gray-900"
 				style={{ fontFamily: "var(--font-playfair-display)" }}
@@ -123,28 +146,38 @@ export default function Profile() {
 					/>
 
 					<div>
-						<button
-							type="button"
-							className="inline-flex items-center gap-3 rounded-[18px] bg-[#7A5AF8] px-4 py-2  font-semibold text-white transition hover:bg-[#6B4EF0]"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2"
-								className="h-5 w-5"
+							<label
+								className="inline-flex cursor-pointer items-center gap-3 rounded-[18px] bg-[#0F4C5C] px-4 py-2 font-semibold text-white transition hover:bg-[#0C3D4A]"
 							>
-								<path d="M12 16V4" />
-								<path d="m7 9 5-5 5 5" />
-								<path d="M20 16.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.5" />
-							</svg>
-							Upload Photo
-						</button>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+									className="h-5 w-5"
+								>
+									<path d="M12 16V4" />
+									<path d="m7 9 5-5 5 5" />
+									<path d="M20 16.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.5" />
+								</svg>
+								Upload Photo
+								<input
+									type="file"
+									accept="image/*"
+									className="hidden"
+									onChange={handleImageUpload}
+								/>
+							</label>
 
-						<p className="mt-3  text-slate-500">
-							JPG, PNG or GIF. Max size 2MB.
-						</p>
+							<p className="mt-3 text-slate-500">
+								JPG, PNG or GIF. Max size 2MB.
+							</p>
+							{imageFileName && (
+								<p className="mt-1 text-sm text-gray-500">
+									Selected: {imageFileName}
+								</p>
+							)}
 					</div>
 				</div>
 			</div>
@@ -154,17 +187,12 @@ export default function Profile() {
 				{success && <p className="text-green-600">{success}</p>}
 
 				<div>
-					<label htmlFor="profileImage" className="block font-medium text-gray-900">
-						Profile Image URL
+					<label className="block font-medium text-gray-900">
+						Profile Image Preview
 					</label>
-					<input
-						id="profileImage"
-						type="text"
-						value={profileImage}
-						onChange={(event) => setProfileImage(event.target.value)}
-						placeholder="https://..."
-						className="mt-3 w-full rounded-3xl border border-gray-300 bg-transparent px-4 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#7A5AF8]"
-					/>
+					<p className="mt-2 text-sm text-gray-500">
+						Upload a photo above to update your profile image.
+					</p>
 				</div>
 				<div>
 					<label htmlFor="fullName" className="block font-medium text-gray-900">
@@ -175,7 +203,7 @@ export default function Profile() {
 						type="text"
 						value={fullName}
 						onChange={(event) => setFullName(event.target.value)}
-						className="mt-3 w-full px-4 py-2 rounded-3xl border border-gray-300 bg-transparent  text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#7A5AF8]"
+						className="mt-3 w-full px-4 py-2 rounded-3xl border border-[#CFE2E8] bg-transparent  text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0F4C5C]"
 					/>
 				</div>
 
@@ -188,7 +216,7 @@ export default function Profile() {
 						type="email"
 						value={email}
 						onChange={(event) => setEmail(event.target.value)}
-						className="mt-3 w-full rounded-3xl border border-gray-300 bg-transparent px-4 py-2  text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#7A5AF8]"
+						className="mt-3 w-full rounded-3xl border border-[#CFE2E8] bg-transparent px-4 py-2  text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0F4C5C]"
 					/>
 				</div>
 
@@ -202,7 +230,7 @@ export default function Profile() {
 						maxLength={160}
 						value={bio}
 						onChange={(event) => setBio(event.target.value)}
-						className="mt-3 w-full resize-none rounded-3xl border border-gray-300 bg-transparent px-4 py-2  text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#7A5AF8]"
+						className="mt-3 w-full resize-none rounded-3xl border border-[#CFE2E8] bg-transparent px-4 py-2  text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0F4C5C]"
 					/>
 					<p className="mt-3  text-slate-500">
 						Brief description for your profile. Max 160 characters.
@@ -212,7 +240,7 @@ export default function Profile() {
 				<button
 					type="submit"
 					disabled={saving}
-					className="rounded-[18px] bg-[#7A5AF8] px-4 py-2 font-semibold text-white transition hover:bg-[#6B4EF0]"
+					className="rounded-[18px] bg-[#0F4C5C] px-4 py-2 font-semibold text-white transition hover:bg-[#0C3D4A]"
 				>
 					{saving ? "Saving..." : "Save Changes"}
 				</button>

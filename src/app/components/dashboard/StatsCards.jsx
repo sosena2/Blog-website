@@ -45,8 +45,9 @@ export default function StatsCards() {
 
   const stats = useMemo(() => {
     const totalPosts = posts.length;
-    const totalViews = posts.reduce((acc, post) => acc + (post.views || 0), 0);
-    const totalLikes = posts.reduce(
+    const publishedPosts = posts.filter((post) => post.status === "published");
+    const totalViews = publishedPosts.reduce((acc, post) => acc + (post.views || 0), 0);
+    const totalLikes = publishedPosts.reduce(
       (acc, post) => acc + (post.likes?.length || 0),
       0
     );

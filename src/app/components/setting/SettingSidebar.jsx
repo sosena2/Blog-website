@@ -37,12 +37,12 @@ export default function SettingSidebar() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <h1 className="text-4xl font-bold text-gray-900">
+      <h1 className="text-4xl font-bold text-black">
         Settings
       </h1>
 
       {/* Card */}
-      <div className="rounded-2xl bg-white p-4 shadow-md">
+      <div className="rounded-2xl bg-white p-4 shadow-sm border border-[#D8E8ED]">
         <ul className="space-y-2">
           {settingsItems.map((item) => {
             const isActive = pathname === item.href;
@@ -54,14 +54,14 @@ export default function SettingSidebar() {
                   className={`flex items-center gap-4 rounded-xl px-5 py-4 text-lg font-medium transition
                     ${
                       isActive
-                        ? "bg-purple-50 text-purple-600"
-                        : "text-gray-900 hover:bg-gray-50"
+                        ? "bg-[#E2F3F7] text-[#0F4C5C]"
+                        : "text-[#365865] hover:bg-[#ECF7FA]"
                     }
                   `}
                 >
                   <item.icon
                     className={`h-6 w-6 ${
-                      isActive ? "text-purple-600" : "text-gray-700"
+                      isActive ? "text-[#0F4C5C]" : "text-[#4B6C77]"
                     }`}
                   />
                   {item.label}

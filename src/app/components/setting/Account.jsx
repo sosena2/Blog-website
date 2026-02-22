@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const languages = ["English", "Spanish", "French", "Portuguese"];
 const timezones = [
@@ -11,11 +12,13 @@ const timezones = [
 ];
 
 export default function Account() {
+	const router = useRouter();
 	const [username, setUsername] = useState("");
 	const [language, setLanguage] = useState("English");
 	const [timezone, setTimezone] = useState("UTC-05:00 Eastern Time");
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
+	const [loggingOut, setLoggingOut] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
 
@@ -93,16 +96,42 @@ export default function Account() {
 		}
 	};
 
+	const handleLogout = async () => {
+		try {
+			setLoggingOut(true);
+			setError("");
+			setSuccess("");
+
+			const res = await fetch("/api/auth/logout", {
+				method: "POST",
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				setError(data.message || "Failed to logout");
+				return;
+			}
+
+			localStorage.removeItem("token");
+			router.push("/login");
+		} catch (err) {
+			setError(err.message || "Something went wrong");
+		} finally {
+			setLoggingOut(false);
+		}
+	};
+
 	if (loading) {
 		return (
-			<section className="rounded-3xl border border-gray-200 bg-white p-10 mt-10">
+			<section className="rounded-3xl border border-[#D8E8ED] bg-white p-10 mt-10">
 				<p className="text-gray-600">Loading account settings...</p>
 			</section>
 		);
 	}
 
 	return (
-		<section className="rounded-3xl border border-gray-200 bg-white p-10 mt-10">
+		<section className="rounded-3xl border border-[#D8E8ED] bg-white p-10 mt-10">
 			<h2
 				className="text-2xl font-bold text-gray-900"
 				style={{ fontFamily: "var(--font-playfair-display)" }}
@@ -122,7 +151,7 @@ export default function Account() {
 						type="text"
 						value={username}
 						onChange={(event) => setUsername(event.target.value)}
-						className="mt-3 w-full rounded-3xl border border-gray-300 bg-transparent px-4 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#7A5AF8]"
+						className="mt-3 w-full rounded-3xl border border-[#CFE2E8] bg-transparent px-4 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0F4C5C]"
 					/>
 				</div>
 
@@ -134,7 +163,7 @@ export default function Account() {
 						id="language"
 						value={language}
 						onChange={(event) => setLanguage(event.target.value)}
-						className="mt-3 w-full rounded-3xl border border-gray-300 bg-transparent px-4 py-2 text-gray-900 outline-none focus:border-[#7A5AF8]"
+						className="mt-3 w-full rounded-3xl border border-[#CFE2E8] bg-transparent px-4 py-2 text-gray-900 outline-none focus:border-[#0F4C5C]"
 					>
 						{languages.map((item) => (
 							<option key={item} value={item}>
@@ -152,7 +181,7 @@ export default function Account() {
 						id="timezone"
 						value={timezone}
 						onChange={(event) => setTimezone(event.target.value)}
-						className="mt-3 w-full rounded-3xl border border-gray-300 bg-transparent px-4 py-2 text-gray-900 outline-none focus:border-[#7A5AF8]"
+						className="mt-3 w-full rounded-3xl border border-[#CFE2E8] bg-transparent px-4 py-2 text-gray-900 outline-none focus:border-[#0F4C5C]"
 					>
 						{timezones.map((item) => (
 							<option key={item} value={item}>
@@ -162,13 +191,24 @@ export default function Account() {
 					</select>
 				</div>
 
-				<button
-					type="submit"
-					disabled={saving}
-					className="rounded-[18px] bg-[#7A5AF8] px-4 py-2 font-semibold text-white transition hover:bg-[#6B4EF0]"
-				>
-					{saving ? "Saving..." : "Save Changes"}
-				</button>
+				<div className="flex items-center gap-3">
+					<button
+						type="submit"
+						disabled={saving || loggingOut}
+						className="rounded-[18px] bg-[#0F4C5C] px-4 py-2 font-semibold text-white transition hover:bg-[#0C3D4A]"
+					>
+						{saving ? "Saving..." : "Save Changes"}
+					</button>
+
+					<button
+						type="button"
+						onClick={handleLogout}
+						disabled={loggingOut || saving}
+						className="rounded-[18px] border border-[#BFD8E0] bg-[#EAF5F8] px-4 py-2 font-semibold text-[#0F4C5C] transition hover:bg-[#DDEDF2]"
+					>
+						{loggingOut ? "Logging out..." : "Logout"}
+					</button>
+				</div>
 			</form>
 		</section>
 	);

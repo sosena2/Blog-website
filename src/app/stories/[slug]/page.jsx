@@ -53,7 +53,7 @@ const StoryDetailsPage = () => {
       <section className="min-h-screen bg-[#F5F1EB] px-6 py-16">
         <div className="max-w-4xl mx-auto bg-white rounded-2xl p-8 shadow-sm space-y-4">
           <p className="text-red-600">{error || 'Story not found'}</p>
-          <Link href="/explore" className="inline-block text-green-950 font-medium">
+          <Link href="/explore" className="inline-block text-[#0F4C5C] font-medium">
             ← Back to Explore
           </Link>
         </div>
@@ -66,7 +66,7 @@ const StoryDetailsPage = () => {
   return (
     <section className="min-h-screen bg-[#F5F1EB] px-6 py-12">
       <article className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-8 md:p-10 space-y-8">
-        <Link href="/explore" className="inline-block text-sm text-green-950 font-medium">
+        <Link href="/explore" className="inline-block text-sm text-[#0F4C5C] font-medium">
           ← Back to Explore
         </Link>
 
@@ -86,7 +86,7 @@ const StoryDetailsPage = () => {
           {story.tags?.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {story.tags.map((tag) => (
-                <span key={tag} className="bg-green-950 text-white px-3 py-1 rounded-full text-sm">
+                <span key={tag} className="bg-[#0F4C5C] text-white px-3 py-1 rounded-full text-sm">
                   {tag}
                 </span>
               ))}

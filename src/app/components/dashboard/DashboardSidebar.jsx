@@ -1,9 +1,25 @@
+"use client";
+
 import React from 'react'
-import { FileText, Pencil, Bookmark, Settings, Edit3 } from "lucide-react";
-import Button from "../ui/Button";
+import { FileText, Pencil, Bookmark, Settings } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
 
 const DashboardSidebar = () => {
+  const pathname = usePathname();
+
+  const getItemClass = (isActive) =>
+    `flex items-center gap-4 px-4 py-3 rounded-2xl transition ${
+      isActive
+        ? "bg-[#E2F3F7] text-[#0F4C5C] font-semibold"
+        : "text-[#365865] hover:bg-[#ECF7FA] hover:text-[#0F4C5C]"
+    }`;
+
+  const isMyPostsActive = pathname === '/dashboard' || pathname === '/dashboard/';
+  const isDraftsActive = pathname === '/dashboard/drafts' || pathname.startsWith('/dashboard/drafts/');
+  const isSavedActive = pathname === '/dashboard/saved' || pathname.startsWith('/dashboard/saved/');
+  const isSettingsActive = pathname === '/dashboard/settings' || pathname.startsWith('/dashboard/settings/');
+
   return (
     <div>
         {/* ===== HEADER ===== */}
@@ -19,40 +35,35 @@ const DashboardSidebar = () => {
             Manage your stories and account
           </p>
         </div>
-
-        <Button className="flex gap-2 bg-gray-300 rounded-2xl px-4 py-2">
-          <Edit3 size={20} />
-          <Link href={'/write'}>Write New Post</Link>
-        </Button>
       </div>
 
 
       {/* ===== CARD ===== */}
-      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-200 p-6">
+      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-sm border border-[#D8E8ED] p-6">
 
-        {/* Top Section (My Posts header inside card) */}
-        <div className="bg-purple-100 text-purple-600 rounded-2xl px-6 py-4 flex items-center gap-3 mb-6">
+        {/* Top Section */}
+        <Link href={'/dashboard'} className={`${getItemClass(isMyPostsActive)} mb-6`}>
           <FileText size={20} />
-          <Link href={'/dashboard'}>My Posts</Link>  
-        </div>
+          <span>My Posts</span>
+        </Link>
 
         {/* Menu Items */}
-        <div className="space-y-8 text-lg">
+        <div className="space-y-4 text-lg">
 
-          <div className="flex items-center gap-4 text-gray-800 hover:text-purple-600 cursor-pointer transition">
+          <Link href={'/dashboard/drafts'} className={getItemClass(isDraftsActive)}>
             <Pencil size={20} />
-            <Link href={'/dashboard/drafts'}>Drafts</Link>
-          </div>
+            <span>Drafts</span>
+          </Link>
 
-          <div className="flex items-center gap-4 text-gray-800 hover:text-purple-600 cursor-pointer transition">
+          <Link href={'/dashboard/saved'} className={getItemClass(isSavedActive)}>
             <Bookmark size={20} />
-            <Link href={'/dashboard/saved'}>Saved</Link>
-          </div>
+            <span>Saved</span>
+          </Link>
 
-          <div className="flex items-center gap-4 text-gray-800 hover:text-purple-600 cursor-pointer transition">
+          <Link href={'/dashboard/settings'} className={getItemClass(isSettingsActive)}>
             <Settings size={20} />
-            <Link href={'/dashboard/settings'}>Setting</Link>
-          </div>
+            <span>Setting</span>
+          </Link>
 
         </div>
       </div>

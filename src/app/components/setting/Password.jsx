@@ -56,7 +56,7 @@ export default function Password() {
 	};
 
 	return (
-		<section className="rounded-3xl border border-gray-200 bg-white p-10 mt-10">
+		<section className="rounded-3xl border border-[#D8E8ED] bg-white p-10 mt-10">
 			<h2
 				className="text-2xl font-bold text-gray-900"
 				style={{ fontFamily: "var(--font-playfair-display)" }}
@@ -80,7 +80,7 @@ export default function Password() {
 						value={currentPassword}
 						onChange={(event) => setCurrentPassword(event.target.value)}
 						placeholder="Enter current password"
-						className="mt-3 w-full rounded-3xl border border-gray-300 bg-transparent px-4 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#7A5AF8]"
+						className="mt-3 w-full rounded-3xl border border-[#CFE2E8] bg-transparent px-4 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0F4C5C]"
 					/>
 				</div>
 
@@ -94,7 +94,7 @@ export default function Password() {
 						value={newPassword}
 						onChange={(event) => setNewPassword(event.target.value)}
 						placeholder="Enter new password"
-						className="mt-3 w-full rounded-3xl border border-gray-300 bg-transparent px-4 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#7A5AF8]"
+						className="mt-3 w-full rounded-3xl border border-[#CFE2E8] bg-transparent px-4 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0F4C5C]"
 					/>
 				</div>
 
@@ -111,14 +111,14 @@ export default function Password() {
 						value={confirmPassword}
 						onChange={(event) => setConfirmPassword(event.target.value)}
 						placeholder="Confirm new password"
-						className="mt-3 w-full rounded-3xl border border-gray-300 bg-transparent px-4 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#7A5AF8]"
+						className="mt-3 w-full rounded-3xl border border-[#CFE2E8] bg-transparent px-4 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0F4C5C]"
 					/>
 				</div>
 
 				<button
 					type="submit"
 					disabled={saving}
-					className="rounded-3xl bg-[#7A5AF8] px-4 py-2 font-semibold text-white transition hover:bg-[#6B4EF0]"
+					className="rounded-3xl bg-[#0F4C5C] px-4 py-2 font-semibold text-white transition hover:bg-[#0C3D4A]"
 				>
 					{saving ? "Updating..." : "Update Password"}
 				</button>

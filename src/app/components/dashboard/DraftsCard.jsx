@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function DraftCard({
   title,
@@ -36,14 +37,14 @@ export default function DraftCard({
         <div className="mt-6 flex items-center gap-4">
           <button
             onClick={onContinue}
-            className="rounded-full bg-purple-600 px-6 py-3 text-white font-medium hover:bg-purple-700 transition"
+            className="rounded-full bg-[#0F4C5C] px-6 py-3 text-white font-medium hover:bg-[#0C3D4A] transition"
           >
-            Continue Writing
+            <Link href="/write">Continue Writing</Link>
           </button>
 
           <button
             onClick={onDelete}
-            className="rounded-full border border-gray-300 px-6 py-3 text-gray-700 font-medium hover:bg-gray-100 transition"
+            className="rounded-full border border-red-200 bg-red-50 px-6 py-3 text-red-700 font-medium hover:bg-red-100 transition"
           >
             Delete
           </button>

@@ -4,7 +4,9 @@ const StorySchema = new mongoose.Schema(
     {
         title: {
             type: String,
-            required: true,
+            required: function () {
+                return this.status !== "draft";
+            },
             trim: true,
 
         },
@@ -15,7 +17,9 @@ const StorySchema = new mongoose.Schema(
         },
         content: {
             type: String,
-            required: true,
+            required: function () {
+                return this.status !== "draft";
+            },
         },
         tags: {
             type: [String],
@@ -24,7 +28,9 @@ const StorySchema = new mongoose.Schema(
             },
         coverImage: {
             type: String,
-            required: true,
+            required: function () {
+                return this.status !== "draft";
+            },
             },
         author: {
             type: mongoose.Schema.Types.ObjectId,

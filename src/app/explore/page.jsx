@@ -50,8 +50,8 @@ const Explore = () => {
   }, [stories, searchTerm, activeTag, sortBy])
   
   return (
-    <div className="bg-[#F5F1EB] space-y-8 pb-10">
-      <div className=' p-20 text-center'>
+    <div className="bg-[#F5F1EB] space-y-6 pb-10">
+      <div className='pt-12 pb-4 px-6 text-center'>
         <div className='text-5xl font-bold mb-4'style={{ fontFamily: 'var(--font-playfair-display)'}} >Explore stories</div>
         <div className='text-gray-500 text-xl'>Discover travel stories from around the world</div>
       </div>
@@ -63,7 +63,7 @@ const Explore = () => {
           placeholder="Search for destinations, topics, or authors..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-3xl focus:outline-none focus:ring-1 focus:ring-green-950 focus:border-transparent shadow-sm"
+          className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-3xl focus:outline-none focus:ring-1 focus:ring-[#0F4C5C] focus:border-transparent shadow-sm"
         />      
       </div>
       {/* filter */}
@@ -80,7 +80,7 @@ const Explore = () => {
             onClick={() => setActiveTag('All')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition
               ${ activeTag === 'All'
-                ? 'bg-green-950 text-white'
+                ? 'bg-[#0F4C5C] text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }
               `}
@@ -94,7 +94,7 @@ const Explore = () => {
             onClick = {() => setActiveTag(tag)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition
               ${ activeTag === tag
-                ? 'bg-green-950 text-white'
+                ? 'bg-[#0F4C5C] text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }
               `}
