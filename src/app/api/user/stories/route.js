@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db/connect";
 import Story from "@/lib/db/models/Story";
+import User from "@/lib/db/models/User";
 import { verifyToken } from "@/lib/auth/verifyToken";
 
 export async function GET(req) {
