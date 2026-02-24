@@ -32,7 +32,7 @@ const LatestStories = ({ stories = [], loading, error }) => {
   return (
     <div className='w-[90%] mx-auto'>
         <h2 className='text-3xl font-bold mb-6'>Latest Stories</h2>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+        <div className='stagger-cards grid grid-cols-1 md:grid-cols-2 gap-6'>
             {stories.map((story) => (
               <Card key={story._id} story={story} />
             ))}

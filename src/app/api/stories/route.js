@@ -60,7 +60,7 @@ export async function GET() {
   await connectDB();
 
   const stories = await Story.find({ status: "published" })
-    .populate("author", "name email")
+    .populate("author", "name email profileImage")
     .sort({ createdAt: -1 });
 
   return NextResponse.json(stories);

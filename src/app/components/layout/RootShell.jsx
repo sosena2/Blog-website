@@ -20,7 +20,7 @@ const RootShell = ({ children }) => {
             : 'bg-[#F5F1EB] pt-24'
         }
       >
-        {children}
+        <div className='w-full page-enter'>{children}</div>
       </main>
       {!hideLayout && <Footer />}
     </>

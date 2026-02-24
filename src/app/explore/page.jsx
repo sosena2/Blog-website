@@ -6,6 +6,8 @@ import ExploreCard from '../components/explore/ExploreCard'
 const Explore = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [stories, setStories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [activeTag, setActiveTag] = useState('All');
   const [sortBy, setSortBy] = useState('Most Recent');
   
@@ -14,21 +16,38 @@ const Explore = () => {
   
   useEffect(() => {
     const fetchStories = async () => {
-      const res = await fetch('/api/stories')
-      const data = await res.json();
-      setStories(data) 
+      try {
+        setLoading(true);
+        setError('');
+
+        const res = await fetch('/api/stories');
+        const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.message || 'Failed to load stories');
+          setStories([]);
+          return;
+        }
+
+        setStories(Array.isArray(data) ? data : []);
+      } catch (err) {
+        setError(err.message || 'Something went wrong');
+        setStories([]);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchStories();
   }, []);
 
   const filteredStories = useMemo(() => {
-    let filtered = [...stories];
+    let filtered = Array.isArray(stories) ? [...stories] : [];
    
     // search filter
     if(searchTerm){
       filtered = filtered.filter(story => 
-        story.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        story.content.toLowerCase().includes(searchTerm.toLowerCase())
+        story.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        story.content?.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
     
@@ -116,8 +135,13 @@ const Explore = () => {
         </div>
 
       </div>
-      <div className='w-[90%] mx-auto flex flex-col gap-6'>
-         {filteredStories.map(story => (
+      <div className='stagger-cards w-[90%] mx-auto flex flex-col gap-6'>
+        {loading && <p className='text-gray-500'>Loading stories...</p>}
+        {!loading && error && <p className='text-red-600'>{error}</p>}
+        {!loading && !error && filteredStories.length === 0 && (
+         <p className='text-gray-500'>No stories found. Only published stories appear here.</p>
+        )}
+        {!loading && !error && filteredStories.map(story => (
           <ExploreCard key = {story._id} story={story} />
          ))}
       </div>

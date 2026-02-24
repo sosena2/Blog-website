@@ -12,7 +12,7 @@ const Footer = () => {
         </div>
         <div className='flex flex-col gap-4'>
           <div className='font-bold'>Explore</div>
-          <div className='flex flex-col text-gray-500 '>
+          <div className='flex flex-col text-gray-500 [&_a]:transition-colors [&_a]:duration-200 [&_a:hover]:text-[#0F4C5C]'>
             <Link href={'/about'}>About</Link>
             <Link href={'/authors'}>Authors</Link>
             <Link href={'/topics'}>Topics</Link>
@@ -20,7 +20,7 @@ const Footer = () => {
         </div> 
         <div className='flex flex-col gap-4'>
           <div className='font-bold'>Resources</div>
-          <div className='flex flex-col text-gray-500 '>
+          <div className='flex flex-col text-gray-500 [&_a]:transition-colors [&_a]:duration-200 [&_a:hover]:text-[#0F4C5C]'>
             <Link href={'/help'}>Help Center</Link>
             <Link href={'/privacy'}>Privacy</Link>
             <Link href={'/terms'}>Terms</Link>
@@ -28,7 +28,7 @@ const Footer = () => {
         </div>
         <div className='flex flex-col gap-4 '>
           <div className='font-bold'>Connect</div>
-          <div className='flex flex-col text-gray-500 '>
+          <div className='flex flex-col text-gray-500 [&_a]:transition-colors [&_a]:duration-200 [&_a:hover]:text-[#0F4C5C]'>
             <Link href={'/x'}>X</Link>
             <Link href={'/instagram'}>Instagram</Link>
             <Link href={'/facebook'}>Facebook</Link>

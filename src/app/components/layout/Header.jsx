@@ -22,11 +22,11 @@ const Header = () => {
           <Link href={'/'} style={{ fontFamily: 'var(--font-playfair-display)' }}>Wanderlust</Link>
         </div>
         <div className='hidden md:flex items-center gap-8 text-gray-600 font-medium'>
-          <Link href={'/explore'} className='hover:text-[#0F4C5C] transition-colors inline-flex items-center gap-2'>
+          <Link href={'/explore'} className='hover:text-[#0F4C5C] transition-all duration-200 inline-flex items-center gap-2 hover:-translate-y-0.5'>
             <Compass size={17} />
             Explore
           </Link>
-          <Link href={'/write'} className='hover:text-[#0F4C5C] transition-colors inline-flex items-center gap-2'>
+          <Link href={'/write'} className='hover:text-[#0F4C5C] transition-all duration-200 inline-flex items-center gap-2 hover:-translate-y-0.5'>
             <PenLine size={17} />
             Write
           </Link>
@@ -43,7 +43,7 @@ const Header = () => {
         <button
           type='button'
           onClick={() => setIsOpen((prev) => !prev)}
-          className='md:hidden inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-3 py-2 text-gray-700 shadow-sm'
+          className='md:hidden inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-3 py-2 text-gray-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5'
           aria-label='Toggle navigation'
           aria-expanded={isOpen}
         >
@@ -51,13 +51,13 @@ const Header = () => {
         </button>
       </div>
       {isOpen && (
-        <div className='md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md'>
+        <div className='md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md animate-fade-down'>
           <div className='max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-3 text-gray-700 font-medium'>
-            <Link href={'/explore'} className='flex items-center gap-2' onClick={() => setIsOpen(false)}>
+            <Link href={'/explore'} className='flex items-center gap-2 transition-all duration-200 hover:text-[#0F4C5C] hover:translate-x-1' onClick={() => setIsOpen(false)}>
               <Compass size={17} />
               Explore
             </Link>
-            <Link href={'/write'} className='flex items-center gap-2' onClick={() => setIsOpen(false)}>
+            <Link href={'/write'} className='flex items-center gap-2 transition-all duration-200 hover:text-[#0F4C5C] hover:translate-x-1' onClick={() => setIsOpen(false)}>
               <PenLine size={17} />
               Write
             </Link>
