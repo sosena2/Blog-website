@@ -6,6 +6,8 @@ import { normalizeImageSrc } from '@/app/lib/utils/image'
 const Card = ({ story }) => {
     const coverSrc = normalizeImageSrc(story?.coverImage, '/images/awash.jpg')
     const profileSrc = normalizeImageSrc(story?.author?.profileImage, '/images/profile.jpg')
+    const summary = story?.excerpt?.trim() || story?.content?.replace(/\s+/g, ' ').trim().slice(0, 120) || "No summary available"
+    const showEllipsis = summary !== "No summary available"
 
   return (
     <div  className='card-appear group flex flex-col bg-white rounded-2xl p-6 w-full mx-auto shadow-lg border border-gray-100 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl' >
@@ -17,7 +19,7 @@ const Card = ({ story }) => {
                 <button className='bg-fuchsia-200 text-fuchsia-900 rounded-2xl px-4 py-2'>{story.tags?.[0] || "Travel"}</button>
             </div>
             <div className='text-xl md:text-2xl font-bold mt-4' style={{ fontFamily: 'var(--font-playfair-display)'}}>{story.title}</div>
-            <div className='text-gray-500 my-2 text-[18px] '>{story.excerpt || story.content?.slice(0, 120) || "No summary available"}...</div>
+            <div className='text-gray-500 my-2 text-[18px] '>{summary}{showEllipsis ? '...' : ''}</div>
             <hr className='text-gray-500'/>
             <div className='flex my-4 gap-4'>
                 <div className='w-20 h-20 relative' >

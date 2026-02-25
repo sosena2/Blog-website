@@ -6,6 +6,8 @@ import { normalizeImageSrc } from '@/app/lib/utils/image'
 const FeaturedStories = ({ story, loading, error }) => {
     const coverSrc = normalizeImageSrc(story?.coverImage, '/images/island.jpg')
     const profileSrc = normalizeImageSrc(story?.author?.profileImage, '/images/profile.jpg')
+    const summary = story?.excerpt?.trim() || story?.content?.replace(/\s+/g, ' ').trim().slice(0, 130) || "No summary available"
+    const showEllipsis = summary !== "No summary available"
 
     if (loading) {
         return (
@@ -46,7 +48,7 @@ const FeaturedStories = ({ story, loading, error }) => {
                 <button className='bg-fuchsia-200 text-fuchsia-900 rounded-2xl px-4 py-2'>Featured</button>
             </div>
             <div className='text-3xl md:text-4xl font-bold mt-4' style={{ fontFamily: 'var(--font-playfair-display)'}}>{story.title}</div>
-            <div className='text-gray-500 mt-2 text-base md:text-[18px]'>{story.excerpt || story.content?.slice(0, 130) || "No summary available"}...</div>
+            <div className='text-gray-500 mt-2 text-base md:text-[18px]'>{summary}{showEllipsis ? '...' : ''}</div>
             <div className='flex gap-4 mt-6'>
                 <div className='w-15 h-15 relative mb-2' >
                     <Image src={profileSrc} alt="profile photo" fill className="rounded-full object-cover" />

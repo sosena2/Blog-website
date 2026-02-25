@@ -77,7 +77,7 @@ export async function GET(req) {
   const skip = (page - 1) * limit;
 
   const stories = await Story.find({ status: "published" })
-    .select("title subtitle slug excerpt coverImage tags createdAt author")
+    .select("title subtitle slug excerpt content coverImage tags createdAt author")
     .populate("author", "name profileImage")
     .sort({ createdAt: -1 })
     .skip(skip)
