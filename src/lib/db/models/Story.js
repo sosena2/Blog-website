@@ -21,6 +21,11 @@ const StorySchema = new mongoose.Schema(
                 return this.status !== "draft";
             },
         },
+        excerpt: {
+            type: String,
+            default: "",
+            trim: true,
+        },
         tags: {
             type: [String],
             required: true,
@@ -52,5 +57,7 @@ const StorySchema = new mongoose.Schema(
 
     {timestamps: true},
 );
+
+StorySchema.index({ status: 1, createdAt: -1 });
 
 export default mongoose.models.Story || mongoose.model("Story", StorySchema);

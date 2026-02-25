@@ -20,7 +20,7 @@ const Explore = () => {
         setLoading(true);
         setError('');
 
-        const res = await fetch('/api/stories');
+        const res = await fetch('/api/stories?limit=24');
         const data = await res.json();
 
         if (!res.ok) {
@@ -47,7 +47,7 @@ const Explore = () => {
     if(searchTerm){
       filtered = filtered.filter(story => 
         story.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        story.content?.toLowerCase().includes(searchTerm.toLowerCase())
+        story.excerpt?.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
     

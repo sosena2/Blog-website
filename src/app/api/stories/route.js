@@ -4,6 +4,12 @@ import Story from "@/lib/db/models/Story";
 import { verifyToken } from "@/lib/auth/verifyToken";
 import User from "@/lib/db/models/User";
 
+const createExcerpt = (value = "") =>
+  value
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 180);
+
 export async function POST(req) {
   try {
     await connectDB();
@@ -44,6 +50,7 @@ export async function POST(req) {
       subtitle,
       slug,
       content,
+      excerpt: createExcerpt(content || ""),
       coverImage,
       tags,
       status,
@@ -56,12 +63,26 @@ export async function POST(req) {
   }
 }
 
-export async function GET() {
+export async function GET(req) {
   await connectDB();
 
+  const url = new URL(req.url);
+  const pageParam = Number.parseInt(url.searchParams.get("page") || "1", 10);
+  const limitParam = Number.parseInt(url.searchParams.get("limit") || "12", 10);
+
+  const page = Number.isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
+  const limit = Number.isNaN(limitParam)
+    ? 12
+    : Math.min(Math.max(limitParam, 1), 50);
+  const skip = (page - 1) * limit;
+
   const stories = await Story.find({ status: "published" })
-    .populate("author", "name email profileImage")
-    .sort({ createdAt: -1 });
+    .select("title subtitle slug excerpt coverImage tags createdAt author")
+    .populate("author", "name profileImage")
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .lean();
 
   return NextResponse.json(stories);
 }

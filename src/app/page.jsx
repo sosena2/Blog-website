@@ -22,7 +22,7 @@ export default function Home() {
         setLoading(true);
         setError("");
 
-        const res = await fetch("/api/stories");
+        const res = await fetch("/api/stories?limit=7");
         const data = await res.json();
 
         if (!res.ok) {

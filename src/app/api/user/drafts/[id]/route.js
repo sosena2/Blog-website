@@ -3,6 +3,12 @@ import connectDB from "@/lib/db/connect";
 import Story from "@/lib/db/models/Story";
 import { verifyToken } from "@/lib/auth/verifyToken";
 
+const createExcerpt = (value = "") =>
+  value
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 180);
+
 export async function GET(req, { params }) {
   try {
     await connectDB();
@@ -51,6 +57,10 @@ export async function PATCH(req, { params }) {
       if (body[key] !== undefined) {
         updates[key] = body[key];
       }
+    }
+
+    if (typeof updates.content === "string") {
+      updates.excerpt = createExcerpt(updates.content);
     }
 
     const wantsPublish = updates.status === "published";
